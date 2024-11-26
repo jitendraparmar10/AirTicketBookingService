@@ -3,7 +3,7 @@ const { Booking } = require('../models/index');
 const { AppError, ValidationError } = require('../utils/errors/index');
 
 
-class Bookingrepository{
+class BookingRepository{
     async create(data){
         try {
             const booking = await Booking.create(data);
@@ -21,6 +21,26 @@ class Bookingrepository{
         }
     }
 
+    async update(bookingId , data){
+        try {
+            const booking = await Booking.findByPk(bookingId)
+            if(data.status){
+                booking.status = data.status;
+            }
+            await booking.save();
+
+            return booking;
+        } catch (error) {
+            // console.log(error);
+            throw new AppError(
+                'RepositoryError',
+                'Cannot update Booking',
+                'There was some issue updating the  booking ,please try againg later',
+                StatusCodes.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
 }
 
-module.exports = Bookingrepository;
+module.exports = BookingRepository;
